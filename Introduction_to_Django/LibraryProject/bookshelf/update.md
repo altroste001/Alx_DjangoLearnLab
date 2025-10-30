@@ -7,8 +7,7 @@ book = Book.objects.get(title='1984')
 book.title = "Nineteen Eighty-Four"
 book.save()
 
-
-Book.objects.all()
+book = Book.objects.get(title='Nineteen Eighty-Four')
 
 # Expected Output:
-# <QuerySet [<Book: Nineteen Eighty-Four>]>
+# <Book: Nineteen Eighty-Four>
