@@ -1,10 +1,10 @@
 from relationship_app.models import Author, Book, Librarian, Library
 
-author = Author.objects.first()
+author = Author.objects.get(name=author_name)
 books_by_author  = author.book_set.all()
 
     
-library = Library.objects.first()
+library = Library.objects.get(name=library_name)
 books_in_library  = library.books.all()
     
 
