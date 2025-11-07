@@ -1,15 +1,7 @@
-from django.http import HttpResponse
-from .models import Book
-from django.shortcuts import render
+from django.urls import path
+from .views import list_books, LibraryDetailView   
 
-
-
-def list_books(request):
-    
-    books = Book.objects.all()
-    
-    context = {'books': books }
-    
-    return render(request, 'relationship_app/list_books.html', context)
-
-
+urlpatterns = [
+    path('books/', list_books, name='books_list'),                 
+    path('library/<int:pk>/', LibraryDetailView.as_view(), name='library_detail'),  
+]
