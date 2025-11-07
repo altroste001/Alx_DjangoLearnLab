@@ -6,11 +6,11 @@ from django.views.generic import DetailView
 def books_list(request):
     books = Book.objects.all()
     context = {'books': books}      
-    return render(request, 'list_books.html', context)  
+    return render(request, 'relationship_app/list_books.html', context)  # ✅ EXACT PATH
 
 class ShowLibrary(DetailView):
     model = Library
-    template_name = "library_detail.html"  
+    template_name = "relationship_app/library_detail.html"  # ✅ EXACT PATH
     context_object_name = "library"       
 
 
