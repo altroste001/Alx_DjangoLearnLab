@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Book, Library
 from django.views.generic.detail import DetailView 
 from django.contrib.auth.forms import UserCreationForm
@@ -16,7 +16,13 @@ class ShowLibrary(DetailView):
     template_name = "relationship_app/library_detail.html"
     context_object_name = "library"
 
-class RegisterView(CreateView):
-    form_class = UserCreationForm
-    template_name = 'relationship_app/register.html'
-    success_url = reverse_lazy('login')
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    
+    return render(request, 'relationship_app/register.html', {'form': form})
