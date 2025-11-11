@@ -10,9 +10,13 @@ from django.contrib.auth.decorators import user_passes_test
 
 
 def list_books(request):
-    books = Book.objects.all()
-    output = "\n".join([f"{book.title} by {book.author.name}" for book in books])
-    return HttpResponse(output)
+    books = Book.objects.all()  
+
+    return render(
+        request,
+        "relationship_app/list_books.html",   # <-- required path!
+        {"books": books}
+    )
 
 
 class LibraryDetailView(DetailView):
