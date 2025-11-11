@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from .models import Book, Library
@@ -8,11 +9,13 @@ from django.contrib.auth.decorators import user_passes_test
 
 
 
-def books_list(request):
+def list_books(request):
     books = Book.objects.all()
-    return render(request, 'relationship_app/list_books.html', {'books': books})
+    output = "\n".join([f"{book.title} by {book.author.name}" for book in books])
+    return HttpResponse(output)
 
-class ShowLibrary(DetailView):
+
+class LibraryDetailView(DetailView):
     model = Library
     template_name = "relationship_app/library_detail.html"
     context_object_name = "library"
