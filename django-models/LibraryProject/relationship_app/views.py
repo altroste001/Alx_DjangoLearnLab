@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from .models import Book, Library
+from .models import Book
+from .models import Library
 from django.views.generic.detail import DetailView
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import user_passes_test
