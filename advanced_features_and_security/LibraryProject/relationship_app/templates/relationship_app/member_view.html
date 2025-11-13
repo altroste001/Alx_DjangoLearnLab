@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Member Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, Member!</h1>
+    <p>You can browse and borrow books.</p>
+    <p>Logged in as: <strong>{{ user.username }}</strong></p>
+    <p>Your role: <strong>{{ user.userprofile.role }}</strong></p>
+    
+    <hr>
+    <a href="{% url 'logout' %}">Logout</a>
+</body>
+</html>
