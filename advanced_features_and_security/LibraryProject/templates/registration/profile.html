@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile</title>
+</head>
+<body>
+
+<h1>Welcome, {{ user.username }}!</h1>
+
+<p>You are now logged in.</p>
+
+<a href="/books/">Go to Books</a> <br>
+
+<form method="post" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+</form>
+
+</body>
+</html>

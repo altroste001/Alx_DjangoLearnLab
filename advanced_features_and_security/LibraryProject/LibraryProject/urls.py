@@ -9,10 +9,11 @@ urlpatterns = [
 
     path(
         'accounts/profile/',
-        TemplateView.as_view(template_name='accounts/profile.html'),
+        TemplateView.as_view(template_name='registration/profile.html'),
         name='profile'
     ),
 
+    path('', include('bookshelf.urls')),
 
-    path('', include('relationship_app.urls')),
+    path('relationship/', include('relationship_app.urls')),
 ]
