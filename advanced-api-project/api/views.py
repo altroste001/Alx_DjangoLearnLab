@@ -1,33 +1,39 @@
-from django.shortcuts import render
-from rest_framework.views import APIView 
-from rest_framework.response import Response
-from rest_framework import status 
-from .models import Author, Book
-from .serializers import AuthorSerializer, BookSerializer
-from rest_framework import generics
+from rest_framework import generics, permissions
+from .models import Book
+from .serializers import BookSerializer
 
 
-class AuthorListView(APIView):
-    def get(self, request):
-        authors = Author.objects.all()
-        serializer = AuthorSerializer(authors, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class AuthorCreateView(APIView):
-    def post(self, request):
-        serializer = AuthorSerializer(data=request.data)
-        if serializer.is_valid():  
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class BookListCreateView(generics.ListCreateAPIView):  
+class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    permission_classes = [permissions.AllowAny]
 
 
-class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
+class BookDetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class BookCreateView(generics.CreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+class BookUpdateView(generics.UpdateAPIView):  
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+
+class BookDeleteView(generics.DestroyAPIView): 
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
