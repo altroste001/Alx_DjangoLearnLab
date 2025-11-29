@@ -1,6 +1,8 @@
 from rest_framework import generics, filters
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from django_filters import rest_framework
+from django_filters.rest_framework import DjangoFilterBackend
+
 from .models import Book
 from .serializers import BookSerializer
 
@@ -8,17 +10,20 @@ from .serializers import BookSerializer
 class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    
-    
+
     filter_backends = [
         DjangoFilterBackend,
         filters.SearchFilter,
-        filters.OrderingFilter,
-        
-         ]
-    
-    filterset_fields = ['title','author','publication_year']
-    search_fields = ['title' , 'author_name']
+        filters.OrderingFilter
+    ]
+
+    # Filtering fields
+    filterset_fields = ['title', 'author', 'publication_year']
+
+    # Searching fields (FIXED)
+    search_fields = ['title', 'author__name']
+
+    # Ordering fields
     ordering_fields = ['title', 'publication_year']
     ordering = ['title']
 
@@ -26,13 +31,13 @@ class BookListView(generics.ListAPIView):
 class BookDetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]   # public read
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class BookCreateView(generics.CreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticated]             # must be logged in
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save()
@@ -41,7 +46,7 @@ class BookCreateView(generics.CreateAPIView):
 class BookUpdateView(generics.UpdateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticated]             # must be logged in
+    permission_classes = [IsAuthenticated]
 
     def perform_update(self, serializer):
         serializer.save()
@@ -50,5 +55,4 @@ class BookUpdateView(generics.UpdateAPIView):
 class BookDeleteView(generics.DestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticated]             # must be logged in
-
+    permission_classes = [IsAuthenticated]
