@@ -120,3 +120,67 @@ The API uses DRF’s default filter backends configured at the view level (not g
 The `BookListCreateView` explicitly declares which fields are available for filtering, searching, and ordering.
 
 No custom global hooks are currently used beyond the standard DRF and `django-filter` configuration.
+
+
+/////
+
+
+
+🔹 Task 2: Filtering, Searching, and Ordering
+
+This task adds advanced query capabilities to the Book API endpoint using Django REST Framework and django-filter.
+
+✔ Installed dependency
+pip install django-filter
+
+✔ Updated REST Framework configuration (settings.py)
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+}
+
+DJANGO_FILTERS_DISABLE_HELP_TEXT = True
+
+✔ Updated BookListView in api/views.py
+class BookListView(generics.ListAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter
+    ]
+    filterset_fields = ['title', 'author', 'publication_year']
+    search_fields = ['title', 'author__name']
+    ordering_fields = ['title', 'publication_year']
+    ordering = ['title']
+
+✔ How to use the new features
+🔎 Filtering
+/api/books/?publication_year=2020
+/api/books/?author=1
+
+🔍 Searching
+/api/books/?search=harry
+/api/books/?search=Test
+
+🔽 Ordering
+/api/books/?ordering=title
+/api/books/?ordering=-publication_year
+
+✔ Example JSON response
+[
+  {
+    "id": 1,
+    "title": "Test Book",
+    "publication_year": 2020,
+    "author": 1
+  }
+]
