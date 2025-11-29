@@ -153,6 +153,8 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',           # JSON only
         'rest_framework.renderers.BrowsableAPIRenderer',   # Browsable API (no filter form)
     ],
+    
+
 }
 
 # Disable the filter form that caused the template error
