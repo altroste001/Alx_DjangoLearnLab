@@ -26,3 +26,4 @@ def profile(request):
         return redirect('profile')
 
     return render(request, 'blog/profile.html')
+
