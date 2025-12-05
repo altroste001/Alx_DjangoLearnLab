@@ -13,8 +13,7 @@
     <header>
         <nav>
             <ul>
-                <li><a href="{% url 'profile' %}">Home</a></li>
-
+                <li><a href="{% url 'posts' %}">Home</a></li>
 
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'profile' %}">Profile</a></li>
@@ -39,3 +38,4 @@
     <script src="{% static 'js/scripts.js' %}"></script>
 </body>
 </html>
+
