@@ -11,6 +11,9 @@
 <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
+
+    <p><small><strong>Tip:</strong> Add multiple tags separated by commas (e.g. "django, blog, alx")</small></p>
+
     <button type="submit">Save</button>
 </form>
 {% endblock %}

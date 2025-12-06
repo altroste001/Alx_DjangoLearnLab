@@ -15,6 +15,14 @@
             <ul>
                 <li><a href="{% url 'posts' %}">Home</a></li>
 
+                <!-- Search Bar -->
+                <li>
+                    <form action="{% url 'post-search' %}" method="get" style="display: inline;">
+                        <input type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}">
+                        <button type="submit">Search</button>
+                    </form>
+                </li>
+
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'profile' %}">Profile</a></li>
                     <li><a href="{% url 'logout' %}">Logout</a></li>
