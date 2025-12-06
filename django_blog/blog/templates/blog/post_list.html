@@ -2,6 +2,10 @@
 {% block content %}
 <h2>All Posts</h2>
 
+<p>
+    <a href="{% url 'post-create' %}">Create New Post</a>
+</p>
+
 {% for post in posts %}
     <h3>
         <a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a>

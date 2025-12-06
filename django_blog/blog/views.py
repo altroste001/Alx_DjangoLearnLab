@@ -6,7 +6,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.db.models import Q
 
-from .models import Post, Comment, Tag
+from .models import Post, Comment
+from taggit.models import Tag   
 from .forms import CustomUserCreationForm, PostForm, CommentForm
 
 
@@ -32,6 +33,7 @@ def profile(request):
         return redirect('profile')
 
     return render(request, 'blog/profile.html')
+
 
 
 
@@ -87,6 +89,9 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return post.author == self.request.user
 
 
+
+
+
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     form_class = CommentForm
@@ -126,10 +131,11 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 
 
+
 def posts_by_tag(request, tag_slug):
-    
     tag = get_object_or_404(Tag, slug=tag_slug)
-    posts = tag.posts.all().order_by('-published_date')
+
+    posts = Post.objects.filter(tags__slug__in=[tag_slug]).order_by('-published_date')
 
     return render(request, 'blog/post_by_tag.html', {
         'tag': tag,
@@ -137,8 +143,9 @@ def posts_by_tag(request, tag_slug):
     })
 
 
+
+
 def post_search(request):
-    
     query = request.GET.get('q', '')
     results = Post.objects.all()
 
