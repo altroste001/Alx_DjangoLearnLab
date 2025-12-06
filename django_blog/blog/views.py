@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.db.models import Q
 
 from .models import Post, Comment
-from taggit.models import Tag   
+from taggit.models import Tag
 from .forms import CustomUserCreationForm, PostForm, CommentForm
 
 
@@ -20,7 +20,6 @@ def register(request):
             return redirect('login')
     else:
         form = CustomUserCreationForm()
-
     return render(request, 'blog/register.html', {'form': form})
 
 
@@ -31,11 +30,7 @@ def profile(request):
         request.user.save()
         messages.success(request, "Profile updated successfully.")
         return redirect('profile')
-
     return render(request, 'blog/profile.html')
-
-
-
 
 
 class PostListView(ListView):
@@ -72,8 +67,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'blog/post_form.html'
 
     def test_func(self):
-        post = self.get_object()
-        return post.author == self.request.user
+        return self.get_object().author == self.request.user
 
     def get_success_url(self):
         return reverse_lazy('post-detail', kwargs={'pk': self.object.pk})
@@ -85,11 +79,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     success_url = reverse_lazy('posts')
 
     def test_func(self):
-        post = self.get_object()
-        return post.author == self.request.user
-
-
-
+        return self.get_object().author == self.request.user
 
 
 class CommentCreateView(LoginRequiredMixin, CreateView):
@@ -113,8 +103,7 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'blog/comment_form.html'
 
     def test_func(self):
-        comment = self.get_object()
-        return comment.author == self.request.user
+        return self.get_object().author == self.request.user
 
 
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -122,25 +111,26 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name = 'blog/comment_confirm_delete.html'
 
     def test_func(self):
-        comment = self.get_object()
-        return comment.author == self.request.user
+        return self.get_object().author == self.request.user
 
     def get_success_url(self):
         return reverse_lazy('post-detail', kwargs={'pk': self.object.post.pk})
 
 
 
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/post_by_tag.html'
+    context_object_name = 'posts'
 
+    def get_queryset(self):
+        slug = self.kwargs.get('slug')
+        return Post.objects.filter(tags__slug=slug).order_by('-published_date')
 
-def posts_by_tag(request, tag_slug):
-    tag = get_object_or_404(Tag, slug=tag_slug)
-
-    posts = Post.objects.filter(tags__slug__in=[tag_slug]).order_by('-published_date')
-
-    return render(request, 'blog/post_by_tag.html', {
-        'tag': tag,
-        'posts': posts
-    })
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag'] = get_object_or_404(Tag, slug=self.kwargs.get('slug'))
+        return context
 
 
 
