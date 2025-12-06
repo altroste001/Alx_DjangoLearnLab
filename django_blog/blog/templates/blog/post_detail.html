@@ -29,7 +29,8 @@
 
 <h3>Add a Comment</h3>
 
-<form method="POST" action="{% url 'comment-create' post.pk %}">
+<form method="POST" action="{% url 'comment-create' post_id=post.pk %}">
+
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Comment</button>
