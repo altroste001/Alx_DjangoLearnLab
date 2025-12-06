@@ -13,6 +13,11 @@ urlpatterns = [
     path('post/<int:pk>/update/', views.PostUpdateView.as_view(), name='post-update'),
     path('post/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post-delete'),
 
-    # List view can remain plural
+    # List view (plural)
     path('posts/', views.PostListView.as_view(), name='posts'),
+    
+    # Comments
+    path('post/<int:pk>/comment/', views.CommentCreateView.as_view(), name='comment-create'),
+    path('comment/<int:pk>/edit/', views.CommentUpdateView.as_view(), name='comment-update'),
+    path('comment/<int:pk>/delete/', views.CommentDeleteView.as_view(), name='comment-delete'),
 ]
