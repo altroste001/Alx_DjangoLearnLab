@@ -1,37 +1,44 @@
-from rest_framework import generics, status, permissions
+from rest_framework import viewsets, filters, permissions
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.contrib.auth import get_user_model
 
-from .serializers import RegisterSerializer, UserSerializer
-
-# ALX expects CustomUser.objects.all()
-CustomUser = get_user_model()
+from .models import Post, Comment
+from .serializers import PostSerializer, CommentSerializer
+from .permissions import IsOwnerOrReadOnly
 
 
-class RegisterView(generics.CreateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = RegisterSerializer
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'content']
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
-class FollowUserView(generics.GenericAPIView):
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+
+class FeedView(APIView):
+    
     permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request, user_id):
-        user_to_follow = CustomUser.objects.get(id=user_id)
-        request.user.following.add(user_to_follow)
-        return Response(
-            {"detail": "User followed"},
-            status=status.HTTP_200_OK
-        )
+    def get(self, request):
+        following_users = request.user.following.all()
+        posts = Post.objects.filter(
+            author__in=following_users
+        ).order_by('-created_at')
 
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
 
-class UnfollowUserView(generics.GenericAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def post(self, request, user_id):
-        user_to_unfollow = CustomUser.objects.get(id=user_id)
-        request.user.following.remove(user_to_unfollow)
-        return Response(
-            {"detail": "User unfollowed"},
-            status=status.HTTP_200_OK
-        )
