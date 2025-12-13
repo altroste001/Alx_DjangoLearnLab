@@ -50,7 +50,8 @@ class LikePostView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        post = Post.objects.get(pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
+
         Like.objects.get_or_create(user=request.user, post=post)
 
         Notification.objects.create(
@@ -59,13 +60,21 @@ class LikePostView(APIView):
             verb="liked your post"
         )
 
-        return Response({"detail": "Post liked"}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Post liked"},
+            status=status.HTTP_200_OK
+        )
 
 
 class UnlikePostView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        post = Post.objects.get(pk=pk)
+        post = generics.get_object_or_404(Post, pk=pk)
+
         Like.objects.filter(user=request.user, post=post).delete()
-        return Response({"detail": "Post unliked"}, status=status.HTTP_200_OK)
+
+        return Response(
+            {"detail": "Post unliked"},
+            status=status.HTTP_200_OK
+        )
