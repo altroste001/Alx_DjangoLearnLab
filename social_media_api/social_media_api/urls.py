@@ -16,12 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import JsonResponse
+
+def home(request):
+    return JsonResponse({
+        "status": "Social Media API is live",
+        "admin": "/admin/",
+        "posts": "/api/posts/",
+        "notifications": "/api/notifications/"
+    })
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path("api/accounts/", include("accounts.urls")),
+    path("", home),
+    path("admin/", admin.site.urls),
     path("api/", include("posts.urls")),
-    path('api/notifications/', include('notifications.urls')),
-
-
+    path("api/", include("notifications.urls")),
 ]
+
