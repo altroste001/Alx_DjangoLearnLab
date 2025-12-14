@@ -2,3 +2,5 @@
 *.py[cod]
 db.sqlite3
 *.log
+# Django static files
+social_media_api/staticfiles/
