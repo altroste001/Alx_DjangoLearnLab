@@ -108,7 +108,7 @@ DATABASES = {
         conn_max_age=600,
     )
 }
-
+DATABASES['default']['PORT'] = DB_PORT
 
 # ========================
 # PASSWORD VALIDATION
