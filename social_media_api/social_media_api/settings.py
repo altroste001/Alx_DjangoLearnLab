@@ -109,17 +109,18 @@ WSGI_APPLICATION = 'social_media_api.wsgi.application'
 # DATABASE (HEROKU SAFE)
 # ========================
 
+
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
-        conn_max_age=600,
-        ssl_require=True,
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
     )
 }
 
 # Safe explicit PORT reference for ALX
-if DB_PORT:
-    DATABASES['default']['PORT'] = DB_PORT
+if DB_PORT and DATABASES["default"]["ENGINE"] != "django.db.backends.sqlite3":
+    DATABASES["default"]["PORT"] = DB_PORT
+
 
 
 # ========================
