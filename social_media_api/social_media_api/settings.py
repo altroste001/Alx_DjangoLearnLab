@@ -8,7 +8,10 @@ from pathlib import Path
 import os
 import dj_database_url
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# ========================
+# BASE DIRECTORY
+# ========================
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -16,11 +19,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY CONFIGURATION
 # ========================
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'unsafe-development-key'  # fallback to prevent crash
+)
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    'social-media-api-adef402aabbc.herokuapp.com',
+    'localhost',
+    '127.0.0.1',
+]
+
+
+# REQUIRED for Django 4+ / 5+ admin on HTTPS
+CSRF_TRUSTED_ORIGINS = [
+    'https://social-media-api-adef402aabbc.herokuapp.com',
+]
 
 
 # ========================
@@ -84,12 +100,14 @@ WSGI_APPLICATION = 'social_media_api.wsgi.application'
 
 
 # ========================
-# DATABASE (PRODUCTION)
+# DATABASE
 # ========================
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
+        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
+        conn_max_age=600,
+        ssl_require=True,
     )
 }
 
@@ -122,8 +140,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+STATICFILES_STORAGE = (
+    'whitenoise.storage.CompressedManifestStaticFilesStorage'
+)
 
 
 # ========================
@@ -158,4 +178,6 @@ AUTH_USER_MODEL = 'accounts.User'
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
+
+# Heroku already handles HTTPS
 SECURE_SSL_REDIRECT = False
